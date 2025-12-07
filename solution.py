@@ -1,101 +1,117 @@
+#names: Leon Subootsky,   Bar Cohen.
+#IDs:   323862524,        324268309.
 # ------------------------------------------------
 #       Q1(ADT Date - dispatch)
 # ------------------------------------------------
-def make_time( h, m, s ):
+def make_time(h, m, s):
+    """"
+    @:param: h-hours, m-minutes, s-seconds.
+    """
+    hours = h
+    minutes = m
+    seconds = s
+    def inner_clock(C_hand):
+        if C_hand == 0: return hours
+        if C_hand == 1: return minutes
+        if C_hand == 2: return seconds
+    return inner_clock
+
+# ------------------------------------------------
+def getitem_pair(p, i):
     pass
 # ------------------------------------------------
-def getitem_pair( p, i ):
+def hour(time):
+    return time(0)
+# ------------------------------------------------
+def minute(time):
+    return time(1)
+# ------------------------------------------------
+def second(time):
+    return time(2)
+# ------------------------------------------------
+def time_difference(time1, time2):
     pass
 # ------------------------------------------------
-def hour( time ):
-    pass
-# ------------------------------------------------
-def minute( time ):
-    pass
-# ------------------------------------------------
-def second( time ):
-    pass
-# ------------------------------------------------
-def time_difference( time1, time2 ):
-    pass
-# ------------------------------------------------
-def str_time( time, tformat = 'hh:mm:ss' ):
+def str_time(time, tformat = 'hh:mm:ss'):
     ''' https://en.wikipedia.org/wiki/12-hour_clock#cite_note-noonmidnight-1 '''
-    pass
+    return
 # ------------------------------------------------
-def time_correction( time, corr):
-    pass
+def time_correction(time,corr):
+    temp_s = (time(2) + corr) % 60 #V
+    temp_m = (time(2) + time(1) // 60)
+    temp_h = ((temp_m + time(1)) // 60) + time(0)
+    make_time(temp_h, temp_m, temp_s)
 # ------------------------------------------------
 '''
->>> t1 = make_time( 11, 5, 47 )
+>>> t1 = make_time(11,5,47)
 >>> t1
 <function make_time.<locals>.dispatch at 0x000001EC41BDC180>
->>> hour( t1 )
+>>> hour(t1)
 11
->>> minute( t1 )
+>>> minute(t1)
 5
->>> str_time( t1 )
+>>> str_time(t1)
 '11:05:47'
->>> t2 = make_time( 0, 12, 23 )
->>> str_time( t2, 'HH:MM' )
+>>> t2 = make_time(0,12,23)
+>>> str_time(t2,'HH:MM')
 '12:12 A.M.'
->>> str_time( time_difference( t1, t2 ) )
+>>> str_time(time_difference(t1,t2))
 '10:53:24'
->>> str_time(time_correction( t1, 4623 ),'HH:MM:SS' )
+>>> str_time(time_correction(t1,4623),'HH:MM:SS')
 '12:22:50 P.M.'
->>> t2 = time_correction( t2, -920 )
->>> str_time( t2 )
+>>> t2 = time_correction(t2,-920)
+>>> str_time(t2)
 '23:57:03'
->>> str_time( t2, 'HH:MM' )
+>>> str_time(t2,'HH:MM')
 '11:57 P.M.'
 '''
 
 # ------------------------------------------------
 #       Q2(ADT Tree - dispatch?)
 # ------------------------------------------------
-def make_tree( val, left, right ):
+def make_tree(val,left,right):
     pass
 # ------------------------------------------------
-def getitem_pair( p, i ):
+def getitem_pair(p,i):
     pass
 # ------------------------------------------------
-def value( tree ):
+def value(tree):
     pass
 # ------------------------------------------------
-def left( tree ):
+def left(tree):
     pass
 # ------------------------------------------------
-def right( tree ):
+def right(tree):
     pass
 # ------------------------------------------------
-def print_tree( tree ):
+def print_tree(tree):
     pass
 # ------------------------------------------------
-def min_value( tree ):
+def min_value(tree):
     pass
 # ------------------------------------------------
-def mirror_tree( tree ):
+def mirror_tree(tree):
     pass
 # ------------------------------------------------
 '''
->>> tree = make_tree( 12, make_tree( 6, make_tree( 8, None, None ), None ),
-make_tree( 7, make_tree( 2, None, None ), make_tree( 15, None, None ) ) )
+>>> tree = make_tree(12,make_tree(6,make_tree(8,None,None),None),
+make_tree(7,make_tree(2,None,None),make_tree(15,None,None)))
 >>> tree
 <function make_tree.<locals>.dispatch at 0x000001FA9A92C4A0>
->>> value( tree )
+>>> value(tree)
 12
->>> value( left( tree ) )
+>>> value(left(tree))
 6
->>> left( right( tree ) )
+>>> left(right(tree))
 <function make_tree.<locals>.dispatch at 0x000001FA9A92C2C0>
->>> value( left( right( tree ) ) )
+>>> value(left(right(tree)))
 2
->>> print_tree( tree )
+>>> print_tree(tree)
 8 6 12 2 7 15 
->>> min_value( tree )
+>>> min_value(tree)
 2
->>> tree1 = mirror_tree( tree )
->>> print_tree( tree1 )
+>>> tree1 = mirror_tree(tree)
+>>> print_tree(tree1)
 15 7 2 12 6 8 
 '''
 
@@ -116,28 +132,28 @@ from functools import reduce
 temp =[('London',18,16),('Paris',18,20),('Madrid',30,35),('Berlin',20,20),('Roma',32,27)]
 Q4a = lambda data: None
 Q4b = lambda data: None
-Q4c = lambda data: reduce( None )
+Q4c = lambda data: reduce(None)
 Q4d = lambda data: None
 # ---------------------- a -----------------------
 '''
-Q4a( temp )
+Q4a(temp)
 [('London', 18), ('Paris', 20), ('Madrid', 35), ('Berlin', 20), ('Roma', 32)]
 '''
 # ---------------------- b -----------------------
 '''
-Q4b( temp )
+Q4b(temp)
 ['Paris', 'Madrid']
 '''
 # ---------------------- c -----------------------
 '''
-Q4c( temp )
+Q4c(temp)
 False
-Q4c( temp[ : 3 ] + temp[ -1: ] )
+Q4c(temp[:3]+temp[-1:])
 True
 '''
 # ---------------------- d -----------------------
 '''
-Q4d( temp )
+Q4d(temp)
 {0: ['Berlin'], 2: ['London', 'Paris'], 5: ['Madrid', 'Roma']}
 '''
 # ------------------------------------------------
@@ -146,67 +162,67 @@ Q4d( temp )
 #       Q5(Dispatch, Message Passing - Sets)
 # https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations
 # ------------------------------------------------
-def sets( d ):
+def sets(d):
     pass
 # ------------------------------------------------
 '''
->>> s1 = sets(( 1, 2, 3, 4, 5, 100 ) )
+>>> s1 = sets((1,2,3,4,5,100))
 >>> s1
 <function sets.<locals>.dispatch at 0x00000288FF7DC860>
->>> s1( 'view' )
+>>> s1('view')
 '{1, 2, 3, 4, 5}'
->>> s1( 'in', 3 )
+>>> s1('in',3)
 True
->>> s1( 'not in', 31 )
+>>> s1('not in',31)
 True
->>> s1( 'not in', 3 )
+>>> s1('not in',3)
 False
->>> s2 = s1( 'not' )
+>>> s2 = s1('not')
 >>> s2
 <function sets.<locals>.dispatch at 0x00000288FF7DD120>
->>> s2( 'view' )
+>>> s2('view')
 '{6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}'
->>> s1( 'set', ( 1, 2, 3, 4, 5, 7, 9, 12, 17 ) )
->>> s2( 'set', ( 2, 4, 5, 10, 14, 16, 20 ) ) 
->>> s1( '+', s2 )( 'not' )( 'view' )
+>>> s1('set',(1,2,3,4,5,7,9,12,17))
+>>> s2('set',(2,4,5,10,14,16,20)) 
+>>> s1('+',s2)('not')('view')
 '{6, 8, 11, 13, 15, 18, 19}'
->>> s1( '*', s2 )( 'xor', s1( '\\', sets( ( 2, 3, 5, 12 ) ) ) )( 'view' )
+>>> s1('*',s2)('xor',s1('\\',sets((2,3,5,12))))('view')
 '{1, 2, 5, 7, 9, 17}'
 '''
 
 # ------------------------------------------------
 # Q6(Dispatch Dictionary, Message Passing-Matrix)
 # ------------------------------------------------
-def matrix( mtr, n, m ):
+def matrix(mtr,n,m):
     pass
 # ------------------------------------------------
 '''
->>> m1 = matrix( ( 1, 2, 3, 4, 5, 6, 7, 8 ), 2, 4 )
->>> m1[ 'add_line' ]( ( 1, 3, 5, 7 ) )
+>>> m1 = matrix((1,2,3,4,5,6,7,8),2,4)
+>>> m1['add_line']((1,3,5,7))
 [1, 2, 3, 4, 5, 6, 7, 8, 1, 3, 5, 7]
->>> m1[ 'add_column' ]( ( 2, 4, 6 ) )
+>>> m1['add_column']((2,4,6))
 [1, 2, 3, 4, 2, 5, 6, 7, 8, 4, 1, 3, 5, 7, 6]
->>> mat1 = m1[ 'print' ]( )
->>> for _ in range( m1[ 'line' ]( ) ):
-	line = mat1[ 'print' ]( )
-	for _ in range( m1[ 'column' ]( ) ):
-		print( line[ 'print' ]( ), end = ' ')
-	print( )
+>>> mat1 = m1['print']()
+>>> for _ in range(m1['line']()):
+	line = mat1['print']()
+	for _ in range(m1['column']()):
+		print(line['print'](), end=' ')
+	print()
 1 2 3 4 2 
 5 6 7 8 4 
 1 3 5 7 6 
->>> m1[ 'shift_up' ]( )
+>>> m1['shift_up']()
 [5, 6, 7, 8, 4, 1, 3, 5, 7, 6, 1, 2, 3, 4, 2]
->>> m1[ 'shift_right' ]( )
+>>> m1['shift_right']()
 [4, 5, 6, 7, 8, 6, 1, 3, 5, 7, 2, 1, 2, 3, 4]
->>> m1[ 'transpose' ]( )
+>>> m1['transpose']()
 [4, 6, 2, 5, 1, 1, 6, 3, 2, 7, 5, 3, 8, 7, 4]
->>> mat1 = m1[ 'print' ]( )
->>> for _ in range( m1[ 'line' ]( ) ):
-	line = mat1[ 'print' ]( )
-	for _ in range( m1[ 'column' ]( ) ):
-		print( line[ 'print' ]( ), end = ' ' )
-	print( )
+>>> mat1 = m1['print']()
+>>> for _ in range(m1['line']()):
+	line = mat1['print']()
+	for _ in range(m1['column']()):
+		print(line['print'](), end=' ')
+	print()
 4 6 2 
 5 1 1 
 6 3 2 
@@ -217,76 +233,81 @@ def matrix( mtr, n, m ):
 # ------------------------------------------------
 #   driver
 # ------------------------------------------------
-def driver( ):
+def driver():
+    #"""
     print('<<< Q1 >>>')
-    t1 = make_time( 11, 5, 47 )
-    print( t1 )
-    print( hour( t1 ) )
-    print( minute( t1 ) )
-    print( str_time( t1 ) )
-    t2 = make_time( 0, 12, 23 )
-    print( str_time( t2, 'HH:MM' ) )
-    print( str_time( time_difference( t1, t2 ) ) )
-    print( str_time(time_correction( t1, 4623 ),'HH:MM:SS' ) )
-    t2 = time_correction( t2, -920 )
-    print( str_time( t2 ) )
-    print( str_time( t2, 'HH:MM' ) )
+    t1 = make_time(11,5,47)
+    print(t1)
+    print(hour(t1))
+    print(minute(t1))
+    print(str_time(t1))
+    t2 = make_time(0,12,23)
+    print(str_time(t2,'HH:MM'))
+    print(str_time(time_difference(t1,t2)))
+    print(str_time(time_correction(t1,4623),'HH:MM:SS'))
+    t2 = time_correction(t2,-920)
+    print(str_time(t2))
+    print(str_time(t2,'HH:MM'))
+    #"""
+    #"""
     print('<<< Q2 >>>')
-    tree = make_tree( 12, make_tree( 6, make_tree( 8, None, None ), None ),
-    make_tree( 7, make_tree( 2, None, None ), make_tree( 15, None, None ) ) )
-    print( tree )
-    print( value( tree ) )
-    print( value( left( tree ) ) )
-    print( left( right( tree ) ) )
-    print( value( left( right( tree ) ) ) )
-    print_tree( tree )
-    print( )
-    print( min_value( tree ) )
-    tree1 = mirror_tree( tree )
-    print_tree( tree1 )
-    print( )
+    tree = make_tree(12,make_tree(6,make_tree(8,None,None),None),
+    make_tree(7,make_tree(2,None,None),make_tree(15,None,None)))
+    print(tree)
+    print(value(tree))
+    print(value(left(tree)))
+    print(left(right(tree)))
+    print(value(left(right(tree))))
+    print_tree(tree)
+    print()
+    print(min_value(tree))
+    tree1 = mirror_tree(tree)
+    print_tree(tree1)
+    print()
+    #"""
     print('<<< Q3 >>>')
-    print( Q3( ( lambda x: x > 0, lambda x: x % 2 == 0, lambda x: 9 < abs( x ) < 100 ),
-               (20,-45,133,8,400,7,-300,68) ) )
+    print(Q3((lambda x: x>0,lambda x: x%2==0,lambda x: 9<abs(x)<100),
+               (20,-45,133,8,400,7,-300,68)))
+    #"""
     print('<<< Q4 >>>')
-    print( Q4a( temp ) )
-    print( Q4b( temp ) )
-    print( Q4c( temp ) )
-    print( Q4c( temp[ : 3 ] + temp[ -1: ] ) )
-    print( Q4d( temp ) )
+    print(Q4a(temp))
+    print(Q4b(temp))
+    print(Q4c(temp))
+    print(Q4c(temp[:3]+temp[-1:]))
+    print(Q4d(temp))
     print('<<< Q5 >>>')
-    s1 = sets(( 1, 2, 3, 4, 5, 100 ) )
-    print( s1 )
-    print( s1( 'view' ) )
-    print( s1( 'in', 3 ) )
-    print( s1( 'not in', 31 ) )
-    print( s1( 'not in', 3 ) )
-    s2 = s1( 'not' )
-    print( s2 )
-    print( s2( 'view' ) )
-    s1( 'set', ( 1, 2, 3, 4, 5, 7, 9, 12, 17 ) )
-    s2( 'set', ( 2, 4, 5, 10, 14, 16, 20 ) )
-    print( s1( '+', s2 )( 'not' )( 'view' ) )
-    print( s1( '*', s2 )( 'xor', s1( '\\', sets( ( 2, 3, 5, 12 ) ) ) )( 'view' ) )
+    s1 = sets((1,2,3,4,5,100))
+    print(s1)
+    print(s1('view'))
+    print(s1('in',3))
+    print(s1('not in',31))
+    print(s1('not in',3))
+    s2 = s1('not')
+    print(s2)
+    print(s2('view'))
+    s1('set',(1,2,3,4,5,7,9,12,17))
+    s2('set',(2,4,5,10,14,16,20))
+    print(s1('+',s2)('not')('view'))
+    print(s1('*',s2)('xor',s1('\\',sets((2,3,5,12))))('view'))
     print('<<< Q6 >>>')
-    m1 = matrix( ( 1, 2, 3, 4, 5, 6, 7, 8 ), 2, 4 )
-    print( m1[ 'add_line' ]( ( 1, 3, 5, 7 ) ) )
-    print( m1[ 'add_column' ]( ( 2, 4, 6 ) ) )
-    mat1 = m1[ 'print' ]( )
-    for _ in range( m1[ 'line' ]( ) ):
-        line = mat1[ 'print' ]( )
-        for _ in range( m1[ 'column' ]( ) ):
-            print( line[ 'print' ]( ), end = ' ')
-        print( )
-    print( m1[ 'shift_up' ]( ) )
-    print( m1[ 'shift_right' ]( ) )
-    print( m1[ 'transpose' ]( ) )
-    mat1 = m1[ 'print' ]( )
-    for _ in range( m1[ 'line' ]( ) ):
-        line = mat1[ 'print' ]( )
-        for _ in range( m1[ 'column' ]( ) ):
-            print( line[ 'print' ]( ), end = ' ' )
-        print( )
+    m1 = matrix((1,2,3,4,5,6,7,8),2,4)
+    print(m1['add_line']((1,3,5,7)))
+    print(m1['add_column']((2,4,6)))
+    mat1 = m1['print']()
+    for _ in range(m1['line']()):
+        line = mat1['print']()
+        for _ in range(m1['column']()):
+            print(line['print'](), end=' ')
+        print()
+    print(m1['shift_up']())
+    print(m1['shift_right']())
+    print(m1['transpose']())
+    mat1 = m1['print']()
+    for _ in range(m1['line']()):
+        line = mat1['print']()
+        for _ in range(m1['column']()):
+            print(line['print'](), end=' ')
+        print()
 
 # ------------------------------------------------
 '''
