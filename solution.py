@@ -5,15 +5,13 @@
 # ------------------------------------------------
 def make_time(h, m, s):
     """"
-    @:param: h-hours, m-minutes, s-seconds.
+    @param: h-hours, m-minutes, s-seconds.
     """
-    hours = h
-    minutes = m
-    seconds = s
-    def inner_clock(C_hand):
-        if C_hand == 0: return hours
-        if C_hand == 1: return minutes
-        if C_hand == 2: return seconds
+    hours = h, minutes = m, seconds = s
+    def inner_clock(clock_hand):
+        if clock_hand == 0: return hours
+        if clock_hand == 1: return minutes
+        if clock_hand == 2: return seconds
     return inner_clock
 
 # ------------------------------------------------
@@ -30,22 +28,28 @@ def second(time):
     return time(2)
 # ------------------------------------------------
 def time_difference(time1, time2):
-    pass
+    # -------
+    h_diff = time1(0) - time2(0)
+    m_diff = time1(1) - time2(1)
+    s_diff = time1(2) - time2(2)
+    # -------
+    return h_diff * 3600+ m_diff * 60 + s_diff
 # ------------------------------------------------
 def str_time(time, tformat = 'hh:mm:ss'):
     if tformat == 'hh:mm:ss':
-        return time
+        return f"{0}:{1}:{2}".format(time[0], time[1], time[2])
     elif tformat == 'hh:mm':
-        return time
+        return f"{0}:{1}".format(time[0], time[1])
     elif tformat == 'HH:MM':
-        return time
+        return f"{0}:{1}, {2}".format(time[0], time[1], "AM" if time[0] < 12 else "PM")
     elif tformat == 'HH:MM:SS':
-        return time
+        return f"{0}:{1}:{2}".format(time[0], time[1], time[2])
     else:
-        return
+        return "Incompatible time format"
 # ------------------------------------------------
-def time_correction(time,corr):
-    if corr == 0: return time #unmodified-time case.
+def time_correction(time, corr = 0):
+    #if corr == 0: time_correction will treat the make_time() instance as a regular time -
+    #and will reformat and construct a new, corrected version of make_time().
     # -------
     ###checking for the sign of corr and modifying the sign of the time conversion operations:
     i = 1
