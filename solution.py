@@ -33,14 +33,38 @@ def time_difference(time1, time2):
     pass
 # ------------------------------------------------
 def str_time(time, tformat = 'hh:mm:ss'):
-    ''' https://en.wikipedia.org/wiki/12-hour_clock#cite_note-noonmidnight-1 '''
-    return
+    if tformat == 'hh:mm:ss':
+        return time
+    elif tformat == 'hh:mm':
+        return time
+    elif tformat == 'HH:MM':
+        return time
+    elif tformat == 'HH:MM:SS':
+        return time
+    else:
+        return
 # ------------------------------------------------
 def time_correction(time,corr):
-    temp_s = (time(2) + corr) % 60 #V
-    temp_m = (time(2) + time(1) // 60)
-    temp_h = ((temp_m + time(1)) // 60) + time(0)
-    make_time(temp_h, temp_m, temp_s)
+    if corr == 0: return time #unmodified-time case.
+    # -------
+    ###checking for the sign of corr and modifying the sign of the time conversion operations:
+    i = 1
+    if corr < 0:
+        i = -1
+    ###
+    # -------
+    ###
+    temp_s = (time(2) + corr) % 60
+    ###(Seconds) after modulo - 60.
+    ###
+    temp_m = (time(1) + ((time(2) + corr) // 60 * i)) % 60
+    ###(Minutes + (Seconds after division by - (60 * i))) after modulo - 60.
+    ###
+    temp_h = (time(0) + ((time(1) + ((time(2) + corr) // 60)) // 60 * i)) % 24
+    ###(Hours + (Minutes + (Seconds after division by - 60)) after division by (60 * i)) after modulo - 24.
+    # -------
+    new_time = make_time(temp_h, temp_m, temp_s)
+    return new_time
 # ------------------------------------------------
 '''
 >>> t1 = make_time(11,5,47)
@@ -249,7 +273,7 @@ def driver():
     print(str_time(t2))
     print(str_time(t2,'HH:MM'))
     #"""
-    #"""
+    """
     print('<<< Q2 >>>')
     tree = make_tree(12,make_tree(6,make_tree(8,None,None),None),
     make_tree(7,make_tree(2,None,None),make_tree(15,None,None)))
@@ -264,17 +288,21 @@ def driver():
     tree1 = mirror_tree(tree)
     print_tree(tree1)
     print()
-    #"""
+    """
+    """
     print('<<< Q3 >>>')
     print(Q3((lambda x: x>0,lambda x: x%2==0,lambda x: 9<abs(x)<100),
                (20,-45,133,8,400,7,-300,68)))
-    #"""
+    """
+    """
     print('<<< Q4 >>>')
     print(Q4a(temp))
     print(Q4b(temp))
     print(Q4c(temp))
     print(Q4c(temp[:3]+temp[-1:]))
     print(Q4d(temp))
+    """
+    """
     print('<<< Q5 >>>')
     s1 = sets((1,2,3,4,5,100))
     print(s1)
@@ -289,6 +317,8 @@ def driver():
     s2('set',(2,4,5,10,14,16,20))
     print(s1('+',s2)('not')('view'))
     print(s1('*',s2)('xor',s1('\\',sets((2,3,5,12))))('view'))
+    """
+    """
     print('<<< Q6 >>>')
     m1 = matrix((1,2,3,4,5,6,7,8),2,4)
     print(m1['add_line']((1,3,5,7)))
@@ -308,6 +338,7 @@ def driver():
         for _ in range(m1['column']()):
             print(line['print'](), end=' ')
         print()
+    """
 
 # ------------------------------------------------
 '''
