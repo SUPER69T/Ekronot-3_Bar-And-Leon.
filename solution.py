@@ -7,7 +7,10 @@ def make_time(h, m, s):
     """"
     @param: h-hours, m-minutes, s-seconds.
     """
-    hours = h, minutes = m, seconds = s
+    hours = h
+    minutes = m
+    seconds = s
+
     def inner_clock(clock_hand):
         if clock_hand == 0: return hours
         if clock_hand == 1: return minutes
@@ -36,14 +39,21 @@ def time_difference(time1, time2):
     return h_diff * 3600+ m_diff * 60 + s_diff
 # ------------------------------------------------
 def str_time(time, tformat = 'hh:mm:ss'):
+    h_temp = str(time(0))
+    m_temp = str(time(1))
+    s_temp = str(time(2))
+    if 0 <= time(0) <= 9: h_temp = "0" + h_temp
+    if 0 <= time(1) <= 9: m_temp = "0" + m_temp
+    if 0 <= time(2) <= 9: s_temp = "0" + s_temp
     if tformat == 'hh:mm:ss':
-        return f"{0}:{1}:{2}".format(time[0], time[1], time[2])
+        return f"{h_temp}:{m_temp}:{s_temp}"
     elif tformat == 'hh:mm':
-        return f"{0}:{1}".format(time[0], time[1])
+        return f"{h_temp}:{m_temp}"
     elif tformat == 'HH:MM':
-        return f"{0}:{1}, {2}".format(time[0], time[1], "AM" if time[0] < 12 else "PM")
+        temp = "AM" if time(0) < 12 else "PM"
+        return f"{h_temp}:{m_temp} {temp}"
     elif tformat == 'HH:MM:SS':
-        return f"{0}:{1}:{2}".format(time[0], time[1], time[2])
+        return f"{h_temp}:{m_temp}:{s_temp}"
     else:
         return "Incompatible time format"
 # ------------------------------------------------
@@ -271,6 +281,7 @@ def driver():
     print(str_time(t1))
     t2 = make_time(0,12,23)
     print(str_time(t2,'HH:MM'))
+    #print("dif: ", time_difference(t1, t2))
     print(str_time(time_difference(t1,t2)))
     print(str_time(time_correction(t1,4623),'HH:MM:SS'))
     t2 = time_correction(t2,-920)
@@ -398,3 +409,4 @@ False
 7 5 3 
 8 7 4 
 '''
+driver()
