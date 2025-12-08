@@ -4,13 +4,9 @@
 #       Q1(ADT Date - dispatch)
 # ------------------------------------------------
 def make_time(h, m, s):
-    """"
-    @param: h-hours, m-minutes, s-seconds.
-    """
     hours = h
     minutes = m
     seconds = s
-
     def inner_clock(clock_hand):
         if clock_hand == 0: return hours
         if clock_hand == 1: return minutes
@@ -108,19 +104,27 @@ def time_correction(time, corr = 0):
 #       Q2(ADT Tree - dispatch?)
 # ------------------------------------------------
 def make_tree(val,left,right):
-    pass
+    v = val
+    l = left
+    r = right
+    def inner_make_tree(clock_hand):
+        if clock_hand == 0: return val
+        if clock_hand == -1: return left
+        if clock_hand == 1: return right
+
+    return inner_make_tree
 # ------------------------------------------------
 def getitem_pair(p,i):
     pass
 # ------------------------------------------------
 def value(tree):
-    pass
+    return tree(0)
 # ------------------------------------------------
 def left(tree):
-    pass
+    return tree(-1)
 # ------------------------------------------------
 def right(tree):
-    pass
+    return tree(1)
 # ------------------------------------------------
 def print_tree(tree):
     pass
@@ -281,9 +285,10 @@ def driver():
     print(str_time(t1))
     t2 = make_time(0,12,23)
     print(str_time(t2,'HH:MM'))
-    #print("dif: ", time_difference(t1, t2))
-    print(str_time(time_difference(t1,t2)))
-    print(str_time(time_correction(t1,4623),'HH:MM:SS'))
+    #print(str_time(time_difference(t1,t2))) WRONG.
+    td = time_difference(t1, t2)
+    print("dif: ", td)
+    print(str_time(time_correction(t1,td),'HH:MM:SS'))
     t2 = time_correction(t2,-920)
     print(str_time(t2))
     print(str_time(t2,'HH:MM'))
