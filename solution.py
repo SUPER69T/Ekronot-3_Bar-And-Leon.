@@ -3,6 +3,7 @@
 # ------------------------------------------------
 #       Q1(ADT Date - dispatch)
 # ------------------------------------------------
+import math
 def make_time(h, m, s):
     hours = h
     minutes = m
@@ -28,30 +29,33 @@ def second(time):
 # ------------------------------------------------
 def time_difference(time1, time2):
     # -------
-    h_diff = time1(0) - time2(0)
-    m_diff = time1(1) - time2(1)
-    s_diff = time1(2) - time2(2)
+    #h_diff = time1(0) - time2(0)
+    h_diff = hour(time1) - hour(time2)
+    m_diff = minute(time1) - minute(time2)
+    s_diff = second(time1) - second(time2)
     # -------
     return h_diff * 3600+ m_diff * 60 + s_diff
 # ------------------------------------------------
 def str_time(time, tformat = 'hh:mm:ss'):
-    h_temp = str(time(0))
-    m_temp = str(time(1))
-    s_temp = str(time(2))
-    if 0 <= time(0) <= 9: h_temp = "0" + h_temp
-    if 0 <= time(1) <= 9: m_temp = "0" + m_temp
-    if 0 <= time(2) <= 9: s_temp = "0" + s_temp
+    h_temp = str(hour(time))
+    m_temp = str(minute(time))
+    s_temp = str(second(time))
+    if 0 <= hour(time) <= 9: h_temp = "0" + h_temp
+    if 0 <= minute(time) <= 9: m_temp = "0" + m_temp
+    if 0 <= second(time) <= 9: s_temp = "0" + s_temp
     if tformat == 'hh:mm:ss':
         return f"{h_temp}:{m_temp}:{s_temp}"
     elif tformat == 'hh:mm':
         return f"{h_temp}:{m_temp}"
-    elif tformat == 'HH:MM':
-        temp = "AM" if time(0) < 12 else "PM"
-        return f"{h_temp}:{m_temp} {temp}"
-    elif tformat == 'HH:MM:SS':
-        return f"{h_temp}:{m_temp}:{s_temp}"
     else:
-        return "Incompatible time format"
+        halve = "A.M" if hour(time) < 12 else "P.M"
+        if hour(time) == 0: h_temp = 12;
+        if tformat == 'HH:MM':
+            return f"{h_temp}:{m_temp} {halve}"
+        elif tformat == 'HH:MM:SS':
+            return f"{h_temp}:{m_temp}:{s_temp} {halve}"
+        else:
+            return "Incompatible time format."
 # ------------------------------------------------
 def time_correction(time, corr = 0):
     #if corr == 0: time_correction will treat the make_time() instance as a regular time -
@@ -64,13 +68,13 @@ def time_correction(time, corr = 0):
     ###
     # -------
     ###
-    temp_s = (time(2) + corr) % 60
+    temp_s = (second(time) + corr) % 60
     ###(Seconds) after modulo - 60.
     ###
-    temp_m = (time(1) + ((time(2) + corr) // 60 * i)) % 60
+    temp_m = (minute(time) + ((second(time) + corr) // 60 * i)) % 60
     ###(Minutes + (Seconds after division by - (60 * i))) after modulo - 60.
     ###
-    temp_h = (time(0) + ((time(1) + ((time(2) + corr) // 60)) // 60 * i)) % 24
+    temp_h = (hour(time) + ((minute(time) + ((second(time) + corr) // 60)) // 60 * i)) % 24
     ###(Hours + (Minutes + (Seconds after division by - 60)) after division by (60 * i)) after modulo - 24.
     # -------
     new_time = make_time(temp_h, temp_m, temp_s)
@@ -108,9 +112,9 @@ def make_tree(val,left,right):
     l = left
     r = right
     def inner_make_tree(clock_hand):
-        if clock_hand == 0: return val
-        if clock_hand == -1: return left
-        if clock_hand == 1: return right
+        if clock_hand == 0: return v
+        if clock_hand == -1: return l
+        if clock_hand == 1: return r
 
     return inner_make_tree
 # ------------------------------------------------
@@ -126,14 +130,26 @@ def left(tree):
 def right(tree):
     return tree(1)
 # ------------------------------------------------
-def print_tree(tree):
-    pass
+def print_tree(node):
+    if value(node) is None: return
+    else:
+        print_tree(node(0))
+        print(node(-1))
+
+        print_tree(node(0))
+        print(node(0))
+
+        print_tree(node(1))
+        print(node(1))
 # ------------------------------------------------
-def min_value(tree):
-    pass
+def min_value(node):
+    if node is None: return
+    return min(min_value(left(node)), min_value(value(node)), min_value(right(node)))
 # ------------------------------------------------
-def mirror_tree(tree):
-    pass
+def mirror_tree(node):
+    if node is None: return
+    else:
+        return make_tree(value(node), mirror_tree(right(node)), mirror_tree(left(node))) #switching.
 # ------------------------------------------------
 '''
 >>> tree = make_tree(12,make_tree(6,make_tree(8,None,None),None),
@@ -287,8 +303,8 @@ def driver():
     print(str_time(t2,'HH:MM'))
     #print(str_time(time_difference(t1,t2))) WRONG.
     td = time_difference(t1, t2)
-    print("dif: ", td)
-    print(str_time(time_correction(t1,td),'HH:MM:SS'))
+    print(f"time difference: {str_time(time_correction(make_time(0, 0, time_difference(t1, t2)), 0))}")
+    print(str_time(time_correction(t1,4623),'HH:MM:SS'))
     t2 = time_correction(t2,-920)
     print(str_time(t2))
     print(str_time(t2,'HH:MM'))
