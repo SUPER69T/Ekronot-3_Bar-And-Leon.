@@ -29,7 +29,6 @@ def second(time):
 # ------------------------------------------------
 def time_difference(time1, time2):
     # -------
-    #h_diff = time1(0) - time2(0)
     h_diff = hour(time1) - hour(time2)
     m_diff = minute(time1) - minute(time2)
     s_diff = second(time1) - second(time2)
@@ -113,10 +112,10 @@ def make_tree(val,left,right):
     v = val
     l = left
     r = right
-    def inner_make_tree(clock_hand):
-        if clock_hand == 0: return v
-        if clock_hand == -1: return l
-        if clock_hand == 1: return r
+    def inner_make_tree(tree):
+        if tree == 0: return v
+        if tree == -1: return l
+        if tree == 1: return r
 
     return inner_make_tree
 # ------------------------------------------------
@@ -133,16 +132,13 @@ def right(tree):
     return tree(1)
 # ------------------------------------------------
 def print_tree(node):
-    if value(node) is None: return
-    else:
-        print_tree(node(0))
-        print(node(-1))
-
-        print_tree(node(0))
-        print(node(0))
-
-        print_tree(node(1))
-        print(node(1))
+    if node is not None:
+        if left(node) is not None:
+            print_tree(left(node))
+        if value(node) is not None:
+            print(value(node), end= " ")
+        if right(node) is not None:
+            print_tree(right(node))
 # ------------------------------------------------
 def min_value(node):
     if node is None: return
@@ -294,7 +290,7 @@ def matrix(mtr,n,m):
 #   driver
 # ------------------------------------------------
 def driver():
-    #"""
+    """
     print('<<< Q1 >>>')
     t1 = make_time(11,5,47)
     print(t1)
@@ -310,8 +306,8 @@ def driver():
     t2 = time_correction(t2,-920)
     print(str_time(t2))
     print(str_time(t2,'HH:MM'))
-    #"""
     """
+    #"""
     print('<<< Q2 >>>')
     tree = make_tree(12,make_tree(6,make_tree(8,None,None),None),
     make_tree(7,make_tree(2,None,None),make_tree(15,None,None)))
@@ -320,13 +316,15 @@ def driver():
     print(value(left(tree)))
     print(left(right(tree)))
     print(value(left(right(tree))))
+    print("tired1")
     print_tree(tree)
+    print("tired2")
     print()
     print(min_value(tree))
     tree1 = mirror_tree(tree)
     print_tree(tree1)
     print()
-    """
+    #"""
     """
     print('<<< Q3 >>>')
     print(Q3((lambda x: x>0,lambda x: x%2==0,lambda x: 9<abs(x)<100),
