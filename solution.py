@@ -48,11 +48,19 @@ def str_time(time, tformat = 'hh:mm:ss'):
     elif tformat == 'hh:mm':
         return f"{h_temp}:{m_temp}"
     else:
-        halve = "A.M" if hour(time) < 12 else "P.M"
-        if hour(time) == 0: h_temp = 12;
+        if hour(time) < 12:
+            halve = "A.M"
+            if hour(time) == 0:
+                h_temp = 12
+        else:
+            halve = "P.M"
+            if hour(time) != 12: #if hour(time) = 12, the state is P.M and the count is not subtracted: 12.
+                h_temp = hour(time) - 12
         if tformat == 'HH:MM':
+            #print(f"h: {h_temp} m: {m_temp} s: {s_temp}, {halve}")
             return f"{h_temp}:{m_temp} {halve}"
         elif tformat == 'HH:MM:SS':
+            #print(f"h: {h_temp} m: {m_temp} s: {s_temp}, {halve}")
             return f"{h_temp}:{m_temp}:{s_temp} {halve}"
         else:
             return "Incompatible time format."
@@ -61,21 +69,15 @@ def time_correction(time, corr = 0):
     #if corr == 0: time_correction will treat the make_time() instance as a regular time -
     #and will reformat and construct a new, corrected version of make_time().
     # -------
-    ###checking for the sign of corr and modifying the sign of the time conversion operations:
-    i = 1
-    if corr < 0:
-        i = -1
-    ###
-    # -------
     ###
     temp_s = (second(time) + corr) % 60
     ###(Seconds) after modulo - 60.
     ###
-    temp_m = (minute(time) + ((second(time) + corr) // 60 * i)) % 60
-    ###(Minutes + (Seconds after division by - (60 * i))) after modulo - 60.
+    temp_m = (minute(time) + ((second(time) + corr) // 60)) % 60
+    ###(Minutes + (Seconds after division by - 60)) after modulo - 60.
     ###
-    temp_h = (hour(time) + ((minute(time) + ((second(time) + corr) // 60)) // 60 * i)) % 24
-    ###(Hours + (Minutes + (Seconds after division by - 60)) after division by (60 * i)) after modulo - 24.
+    temp_h = (hour(time) + ((minute(time) + ((second(time) + corr) // 60)) // 60)) % 24
+    ###(Hours + (Minutes + (Seconds after division by - 60)) after division by - 60) after modulo - 24.
     # -------
     new_time = make_time(temp_h, temp_m, temp_s)
     return new_time
