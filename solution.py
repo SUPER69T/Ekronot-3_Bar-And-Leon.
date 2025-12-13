@@ -5,6 +5,7 @@
 # ------------------------------------------------
 import math
 import sys
+from itertools import accumulate
 
 from numpy import integer
 
@@ -21,7 +22,7 @@ def make_time(h, m, s):
 
 # ------------------------------------------------
 def getitem_pair(p, i):
-    pass
+    return p(i)
 # ------------------------------------------------
 def hour(time):
     return time(0)
@@ -125,7 +126,7 @@ def make_tree(val,left,right):
     return inner_make_tree
 # ------------------------------------------------
 def getitem_pair(p,i):
-    pass
+    return p(i)
 # ------------------------------------------------
 def value(tree):
     return tree(0)
@@ -180,8 +181,7 @@ make_tree(7,make_tree(2,None,None),make_tree(15,None,None)))
 # ------------------------------------------------
 # Q3(Conventional Interfaces, Generator expressions)
 # ------------------------------------------------
-Q3 = lambda func,data: None
-#def Q3():
+Q3 = lambda func,data: tuple((d for d in data if sum(f(d) for f in func) == 1))
 # ------------------------------------------------
 '''
 >>> Q3((lambda x: x>0,lambda x: x%2==0,lambda x: 9<abs(x)<100),(20,-45,133,8,400,7,-300,68))
