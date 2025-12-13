@@ -4,6 +4,11 @@
 #       Q1(ADT Date - dispatch)
 # ------------------------------------------------
 import math
+import sys
+
+from numpy import integer
+
+
 def make_time(h, m, s):
     hours = h
     minutes = m
@@ -141,8 +146,12 @@ def print_tree(node):
             print_tree(right(node))
 # ------------------------------------------------
 def min_value(node):
-    if node is None: return
-    return min(min_value(left(node)), min_value(value(node)), min_value(right(node)))
+    if node is None: return float('inf')
+    else: #covering all three cases: (valueL,valueR), (valueL,None), (None,valueR).
+        if (left(node) is not None) and (right(node) is not None):
+            return min(min_value(left(node)), value(node), min_value(right(node)))
+        elif left(node) is not None: return min(min_value(left(node)), value(node))
+        else: return min(value(node), min_value(right(node)))
 # ------------------------------------------------
 def mirror_tree(node):
     if node is None: return
@@ -307,7 +316,7 @@ def driver():
     print(str_time(t2))
     print(str_time(t2,'HH:MM'))
     """
-    #"""
+    """
     print('<<< Q2 >>>')
     tree = make_tree(12,make_tree(6,make_tree(8,None,None),None),
     make_tree(7,make_tree(2,None,None),make_tree(15,None,None)))
@@ -316,20 +325,18 @@ def driver():
     print(value(left(tree)))
     print(left(right(tree)))
     print(value(left(right(tree))))
-    print("tired1")
     print_tree(tree)
-    print("tired2")
     print()
     print(min_value(tree))
     tree1 = mirror_tree(tree)
     print_tree(tree1)
     print()
-    #"""
     """
+    #"""
     print('<<< Q3 >>>')
     print(Q3((lambda x: x>0,lambda x: x%2==0,lambda x: 9<abs(x)<100),
                (20,-45,133,8,400,7,-300,68)))
-    """
+    #"""
     """
     print('<<< Q4 >>>')
     print(Q4a(temp))
