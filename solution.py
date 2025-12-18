@@ -6,6 +6,7 @@
 import math
 import sys
 from itertools import accumulate
+from os.path import split
 
 from contourpy.util import data
 from numpy import integer
@@ -233,7 +234,49 @@ Q4d(temp)
 # https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations
 # ------------------------------------------------
 def sets(d):
-    pass
+    #don't want boilerplate code...:
+    #-------
+    def bound_to_range(d):
+        return tuple(n for n in d if n in range(21))
+    def remove_duplicates(d):
+        return tuple(reduce(lambda l, x: l + [x] if x not in l else l, d, []))
+    #-------
+    t = bound_to_range(remove_duplicates(d))
+
+    def dispatch(massage, value= None):
+        nonlocal t
+
+        if massage == 'set':
+            t = bound_to_range(value)
+
+        elif massage == 'view':
+            return '{' + ', '.join(chr(n) for n in t) + '}'
+
+        elif massage == 'in':
+            return value in t
+
+        elif massage == 'not in':
+            return not value in t
+
+        elif massage == 'not': #COMPLEMENT.
+            return (n for n in range(21) if dispatch('not in', n))
+
+        elif massage == '+': #UNION.
+            return remove_duplicates(list(t + value))
+
+        elif massage == '*': #INTERSECTION.
+            return tuple(n for n in value if dispatch('in', n))
+
+        elif massage == '//': #(t / value).
+            #removing from t the union of t and value(t*value):
+            return  tuple(n for n in t if n not in dispatch('*', value))
+
+        elif massage == 'xor':
+            return tuple(dispatch('//', value))
+
+
+    return dispatch
+
 # ------------------------------------------------
 '''
 >>> s1 = sets((1,2,3,4,5,100))
@@ -342,15 +385,15 @@ def driver():
     print(Q3((lambda x: x > 0, lambda x: x % 2 == 0, lambda x: 9 < abs(x) < 100),
                (20, -45, 133, 8, 400, 7, -300, 68)))
     """
-    #"""
+    """
     print('<<< Q4 >>>')
     print(Q4a(temp))
     print(Q4b(temp))
     print(Q4c(temp))
     print(Q4c(temp[:3]+temp[-1:]))
     print(Q4d(temp))
-    #"""
     """
+    #"""
     print('<<< Q5 >>>')
     s1 = sets((1,2,3,4,5,100))
     print(s1)
@@ -364,8 +407,8 @@ def driver():
     s1('set',(1,2,3,4,5,7,9,12,17))
     s2('set',(2,4,5,10,14,16,20))
     print(s1('+',s2)('not')('view'))
-    print(s1('*',s2)('xor',s1('\\',sets((2,3,5,12))))('view'))
-    """
+    print(s1('*',s2)('xor',s1('//',sets((2,3,5,12))))('view'))
+    #"""
     """
     print('<<< Q6 >>>')
     m1 = matrix((1,2,3,4,5,6,7,8),2,4)
