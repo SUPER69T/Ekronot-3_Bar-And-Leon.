@@ -7,8 +7,8 @@ import math
 import sys
 from itertools import accumulate
 
+from contourpy.util import data
 from numpy import integer
-
 
 def make_time(h, m, s):
     hours = h
@@ -193,10 +193,17 @@ Q3 = lambda func,data: tuple((d for d in data if sum(f(d) for f in func) == 1))
 # ------------------------------------------------
 from functools import reduce
 temp =[('London',18,16),('Paris',18,20),('Madrid',30,35),('Berlin',20,20),('Roma',32,27)]
-Q4a = lambda data: None
-Q4b = lambda data: None
-Q4c = lambda data: reduce(None)
-Q4d = lambda data: None
+Q4a = lambda data: list(map(lambda measure: (measure[0], max(measure[1], measure[2])),data))
+Q4b = lambda data: list(map(lambda m: m[0],filter(lambda m: m[1] < m[2], data)))
+Q4c = lambda data: reduce(lambda a, b: a and b[1] != b[2], data, True)
+#Q4d = lambda data: dict(list(map(lambda m: (abs(m[1] - m[2]), m[0]), data)))# - this was our original code that doesn't work because the python dictionary doesn't save states.
+#chat-GPT helped with solving the state saving problem by comparing each new value's key to each new key creation, thus building lists of mutual-key values.
+#
+#          outer_iteration's_key        (inner_iteration's_tuple)                                   (outer_iteration's_tuple)
+#                       v                          v                                                            v
+Q4d = lambda data: {abs(t1 - t2): [city for city, t1_, t2_ in data if abs(t1_ - t2_) == abs(t1 - t2)] for city, t1, t2 in data}
+#                                   ^                                      ^                   ^            ^
+#                             inner_iteration                   inner_difference         outer_difference   outer_iteration
 # ---------------------- a -----------------------
 '''
 Q4a(temp)
@@ -330,19 +337,19 @@ def driver():
     print_tree(tree1)
     print()
     """
-    #"""
+    """
     print('<<< Q3 >>>')
     print(Q3((lambda x: x > 0, lambda x: x % 2 == 0, lambda x: 9 < abs(x) < 100),
                (20, -45, 133, 8, 400, 7, -300, 68)))
-    #"""
     """
+    #"""
     print('<<< Q4 >>>')
     print(Q4a(temp))
     print(Q4b(temp))
     print(Q4c(temp))
     print(Q4c(temp[:3]+temp[-1:]))
     print(Q4d(temp))
-    """
+    #"""
     """
     print('<<< Q5 >>>')
     s1 = sets((1,2,3,4,5,100))
