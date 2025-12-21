@@ -270,19 +270,19 @@ def sets(d):
             #                    |gets all elements from the value (=sets object) itself|
 
         elif message == '*': #INTERSECTION.
-            return sets(tuple(n for n in value if dispatch('in', n)))
+            return sets(tuple(n for n in value('view') if dispatch('in', n)))
 
         elif message == '//': #(t / value).
-            #removing from t the union of t and value(t*value):
-            return  sets(tuple(n for n in t if n not in dispatch('*', value)))
+            #removing the union of t and value(t*value) from t:
+            return  sets(tuple(n for n in t if n not in dispatch('*', value)('view')))
 
         elif message == 'xor':
-            return sets(tuple(n for n in dispatch('+', value) if n not in dispatch('*', value)))
+            return sets(tuple(n for n in dispatch('+', value)('view') if n not in dispatch('*', value)('view')))
 
-            """
-            return sets(tuple(dispatch('//', value) + tuple(n for n in value if n not in t)))
-            #                |          (t / value)          |             (value / t)             |
-            """
+        """this is another way of doing the xor:
+        return sets(tuple(dispatch('//', value) + tuple(n for n in value if n not in t)))
+        #       |          (t / value)          |             (value / t)             |
+        """
     return dispatch
 
 # ------------------------------------------------
@@ -308,12 +308,14 @@ False
 >>> s1('+',s2)('not')('view')
 '{6, 8, 11, 13, 15, 18, 19}'                                   #also here, there should be a - 0. this checking-file is still dogshit.
 
+
 >>> s1('*',s2)('xor',s1('//',sets((2,3,5,12))))('view')
-#   |2, 4, 5 |      |          1, 47, 9, 17           |
+#   |UNION___|------|(t / value)----------------------|
+#   |2, 4, 5_|------|__________1, 4, 7, 9, 17___________|
         v                            v
-        |----------------------------|
-                       v
-#           |1, 2, 4, 5, 9, 17, 47|   --> this should be the correct output.
+        |---|XOR__________________|--|
+            v                     v
+#           |1, 2, 5, 7, 9, 17|   --> this should be the correct output. (V) - it is.
 
 '{1, 2, 5, 7, 9, 17}'
 '''
@@ -420,7 +422,9 @@ def driver():
     print(s2)
     print(s2('view'))
     s1('set',(1,2,3,4,5,7,9,12,17))
-    s2('set',(2,4,5,10,14,16,20))
+    s2('set', (2,4,5,10,14,16,20))
+    print("s1: " , s1('view'))
+    print("s2: ", s2('view'))
     print(s1('+',s2)('not')('view'))
     print(s1('*',s2)('xor',s1('//',sets((2,3,5,12))))('view'))
     #"""
