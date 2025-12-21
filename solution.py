@@ -1,4 +1,4 @@
-#names: Leon Subootsky,   Bar Cohen.
+#names: Leon Subbotsky,   Bar Cohen.
 #IDs:   323862524,        324268309.
 # ------------------------------------------------
 #       Q1(ADT Date - dispatch)
@@ -239,42 +239,50 @@ def sets(d):
     def bound_to_range(d):
         return tuple(n for n in d if n in range(21))
     def remove_duplicates(d):
-        return tuple(reduce(lambda l, x: l + [x] if x not in l else l, d, []))
+        return tuple(dict.fromkeys(d))
     #-------
     t = bound_to_range(remove_duplicates(d))
 
-    def dispatch(massage, value= None):
+    def dispatch(message, value= None):
         nonlocal t
 
-        if massage == 'set':
+        if message == 'set':
             t = bound_to_range(value)
 
-        elif massage == 'view':
-            return '{' + ', '.join(chr(n) for n in t) + '}'
+        elif message == 'view':
+            return set(t) #', '.join(chr(n) for n in t)
 
-        elif massage == 'in':
+        elif message == 'in':
             return value in t
 
-        elif massage == 'not in':
+        elif message == 'not in':
             return not value in t
 
-        elif massage == 'not': #COMPLEMENT.
-            return (n for n in range(21) if dispatch('not in', n))
+        elif message == 'not': #COMPLEMENT.
+            return sets(tuple(n for n in range(21) if dispatch('not in', n)))
+            #        ^
+#|creating a new sets object |iterating over the numbers of 0-20 and returning only  |
+                            #|the ones that don't appear in t by using dispatch again|
 
-        elif massage == '+': #UNION.
-            return remove_duplicates(list(t + value))
+        elif message == '+': #UNION.
+            return sets(remove_duplicates(t + tuple(value('view')))) #the ('view') is necessary here because 'value' isn't a collection.
+            #                                               ^
+            #                    |gets all elements from the value (=sets object) itself|
 
-        elif massage == '*': #INTERSECTION.
-            return tuple(n for n in value if dispatch('in', n))
+        elif message == '*': #INTERSECTION.
+            return sets(tuple(n for n in value if dispatch('in', n)))
 
-        elif massage == '//': #(t / value).
+        elif message == '//': #(t / value).
             #removing from t the union of t and value(t*value):
-            return  tuple(n for n in t if n not in dispatch('*', value))
+            return  sets(tuple(n for n in t if n not in dispatch('*', value)))
 
-        elif massage == 'xor':
-            return tuple(dispatch('//', value))
+        elif message == 'xor':
+            return sets(tuple(n for n in dispatch('+', value) if n not in dispatch('*', value)))
 
-
+            """
+            return sets(tuple(dispatch('//', value) + tuple(n for n in value if n not in t)))
+            #                |          (t / value)          |             (value / t)             |
+            """
     return dispatch
 
 # ------------------------------------------------
@@ -294,12 +302,19 @@ False
 >>> s2
 <function sets.<locals>.dispatch at 0x00000288FF7DD120>
 >>> s2('view')
-'{6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}'
+'{6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}'     #this should also contain - 0. this checking-file is dogshit.
 >>> s1('set',(1,2,3,4,5,7,9,12,17))
 >>> s2('set',(2,4,5,10,14,16,20)) 
 >>> s1('+',s2)('not')('view')
-'{6, 8, 11, 13, 15, 18, 19}'
->>> s1('*',s2)('xor',s1('\\',sets((2,3,5,12))))('view')
+'{6, 8, 11, 13, 15, 18, 19}'                                   #also here, there should be a - 0. this checking-file is still dogshit.
+
+>>> s1('*',s2)('xor',s1('//',sets((2,3,5,12))))('view')
+#   |2, 4, 5 |      |          1, 47, 9, 17           |
+        v                            v
+        |----------------------------|
+                       v
+#           |1, 2, 4, 5, 9, 17, 47|   --> this should be the correct output.
+
 '{1, 2, 5, 7, 9, 17}'
 '''
 
