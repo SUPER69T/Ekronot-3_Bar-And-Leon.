@@ -324,7 +324,27 @@ False
 # Q6(Dispatch Dictionary, Message Passing-Matrix)
 # ------------------------------------------------
 def matrix(mtr,n,m):
-    pass
+    mtr_n = n
+    mtr_m = mtr
+    mtr_data = []
+
+    def add_line(n_row):
+        pass
+
+    def add_column(r_col):
+        pass
+
+    def print(matrix):
+        pass
+
+    dispatch = {'add_line' : add_line, 'add_column' : add_column, 'print' : print,
+                'line' : line, 'column' : column, 'shift_up' : shift_up,
+                'shift_down' : shift_down, 'shift_left' : shift_left,
+                'shift_right' : shift_right, 'transpose' : transpose}
+
+    return dispatch
+
+
 # ------------------------------------------------
 '''
 >>> m1 = matrix((1,2,3,4,5,6,7,8),2,4)
