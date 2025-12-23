@@ -328,33 +328,45 @@ False
 # Q6(Dispatch Dictionary, Message Passing-Matrix)
 # ------------------------------------------------
 def matrix(mtr,n,m):
-    #n = len(rows)   } =
-    #m = len(columns)} = assuming both inputs are valid and correct.
+    #n = len(rows)    } =
+    #m = len(columns) } = assuming both inputs are valid and correct.
     #mtr_data = [list(row) for row in mtr]
-    mtr_data =[]
-    index = 0
-    for row in range(n):
-        mtr_data.append(list(mtr[index, index + m]))
-        index += m
+    def matricify(mtr):
+        inner_mtr = []
+        index = 0
+        for row in range(n):
+            inner_mtr.append(list(mtr[i] for i in range(index, index + m))) #mtr[index, index + m]
+            index += m
+        return inner_mtr
 
+    def dematricify(matrix):
+        inner_list = []
+        for row in matrix: inner_list.append(list(row))
+        return inner_list
+
+    mtr_data = matricify(mtr)
 
     def add_line(n_row):
         nonlocal mtr_data
         nonlocal n
         mtr_data.append(list(n_row)) #adding an entire tuple_to_list converted row.
         n = n + 1
+        return dematricify(mtr_data)
 
     def add_column(r_col):
         nonlocal mtr_data
         nonlocal m
         for r in range(n): mtr_data[r].append(r_col[r]) #adding each final element in a row, for each - r_col - matching row.
         m = m + 1
+        return dematricify(mtr_data)#matrix(mtr_data, n, m)
 
     def print():
+        nonlocal mtr_data
         for row in mtr_data:
             for elem in row:
                 builtins.print(elem, end= "")
             builtins.print()
+        return matrix(dematricify(mtr_data), n, m)
 
     def line():
         return n
@@ -506,14 +518,17 @@ def driver():
     #"""
     print('<<< Q6 >>>')
     m1 = matrix((1,2,3,4,5,6,7,8),2,4)
-    print(m1['add_line']((1,3,5,7)))
-    print(m1['add_column']((2,4,6)))
+    print(m1['add_line']((1,3,5,7))) # } makes no sense making this print like the same way as the - 'print' -
+    print(m1['add_column']((2,4,6))) # } method, since the matrix is an object and requires methods only...
     mat1 = m1['print']()
+    #print("stage1")
     for _ in range(m1['line']()):
         line = mat1['print']()
+        #print("stage2")
         for _ in range(m1['column']()):
             print(line['print'](), end=' ')
         print()
+    #print("stage3")
     print(m1['shift_up']())
     print(m1['shift_right']())
     print(m1['transpose']())
