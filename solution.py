@@ -10,6 +10,10 @@ from os.path import split
 
 from contourpy.util import data
 from numpy import integer
+from typing_extensions import override
+
+#going to be useful for overloading "print" in exercise 6...:
+import builtins
 
 def make_time(h, m, s):
     hours = h
@@ -324,18 +328,69 @@ False
 # Q6(Dispatch Dictionary, Message Passing-Matrix)
 # ------------------------------------------------
 def matrix(mtr,n,m):
-    mtr_n = n
-    mtr_m = mtr
-    mtr_data = []
+    #n = len(rows)   } =
+    #m = len(columns)} = assuming both inputs are valid and correct.
+    #mtr_data = [list(row) for row in mtr]
+    mtr_data =[]
+    index = 0
+    for row in range(n):
+        mtr_data.append(list(mtr[index, index + m]))
+        index += m
+
 
     def add_line(n_row):
-        pass
+        nonlocal mtr_data
+        nonlocal n
+        mtr_data.append(list(n_row)) #adding an entire tuple_to_list converted row.
+        n = n + 1
 
     def add_column(r_col):
-        pass
+        nonlocal mtr_data
+        nonlocal m
+        for r in range(n): mtr_data[r].append(r_col[r]) #adding each final element in a row, for each - r_col - matching row.
+        m = m + 1
 
-    def print(matrix):
-        pass
+    def print():
+        for row in mtr_data:
+            for elem in row:
+                builtins.print(elem, end= "")
+            builtins.print()
+
+    def line():
+        return n
+
+    def column():
+        return m
+
+    def shift_up():
+        nonlocal mtr_data
+        new_mtr = [mtr[i + 1] if i > 0 else mtr[0] for i in
+                   range(len(mtr))]  # includes the first and last rows switching.
+        # mtr_data = mtr_data[1:] + [mtr_data[-1]] this is also possible.
+        mtr_data = new_mtr
+
+    def shift_down():
+        nonlocal mtr_data
+        new_mtr = [mtr[i - 1] if i > 0 else mtr[0] for i in
+                   range(len(mtr))] #includes the first and last rows switching.
+        #new_mtr = [mtr_data[0]] + mtr_data[:-1] is also possible.
+        mtr_data = new_mtr
+
+    def shift_left():
+        nonlocal mtr_data
+        for r in n:
+            mtr_data[r] = [r[1:]] + r[-1]
+
+    def shift_right():
+        nonlocal mtr_data
+        for r in n:
+            mtr_data[r] = [r[0]] + r[:-1]
+
+    def transpose():
+        nonlocal mtr_data
+        for i in range(n):
+            for j in range(i, m): #runs from the diagonal to the last column of the mtr_data matrix.
+                mtr_data[i][j] = mtr_data[j][i]
 
     dispatch = {'add_line' : add_line, 'add_column' : add_column, 'print' : print,
                 'line' : line, 'column' : column, 'shift_up' : shift_up,
@@ -430,7 +485,7 @@ def driver():
     print(Q4c(temp[:3]+temp[-1:]))
     print(Q4d(temp))
     """
-    #"""
+    """
     print('<<< Q5 >>>')
     s1 = sets((1,2,3,4,5,100))
     print(s1)
@@ -447,8 +502,8 @@ def driver():
     print("s2: ", s2('view'))
     print(s1('+',s2)('not')('view'))
     print(s1('*',s2)('xor',s1('//',sets((2,3,5,12))))('view'))
-    #"""
     """
+    #"""
     print('<<< Q6 >>>')
     m1 = matrix((1,2,3,4,5,6,7,8),2,4)
     print(m1['add_line']((1,3,5,7)))
@@ -468,7 +523,7 @@ def driver():
         for _ in range(m1['column']()):
             print(line['print'](), end=' ')
         print()
-    """
+    #"""
 
 # ------------------------------------------------
 '''
