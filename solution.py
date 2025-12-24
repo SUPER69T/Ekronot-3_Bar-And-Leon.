@@ -588,13 +588,19 @@ def driver():
     m1['print']()
     #-------
 
-    """still makes - 0 sense:
+    """
     mat1 = m1['print']()
     for _ in range(m1['line']()):
         line = mat1['print']()
         for _ in range(m1['column']()):
             print(line['print'](), end=' ')
         print()
+    #maybe the intention was to just remove and return each first element from the mtr_data list...
+    #that makes enough sense to be able to work but then you wouldn't be able to save the original -
+    #state of the full matrix without additional flags, indicating the start of the returning process,
+    #thus knowing when to create a clone of the matrix at each 'print' method activation. 
+    #I don't like the fact I had to waste this much time just unpacking the original idea because again -
+    #this implementation method only makes sense as an academic exercise and nothing more...
     """
     #"""
 
