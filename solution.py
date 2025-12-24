@@ -330,19 +330,27 @@ False
 def matrix(mtr,n,m):
     #n = len(rows)    } =
     #m = len(columns) } = assuming both inputs are valid and correct.
-    #mtr_data = [list(row) for row in mtr]
-    def matricify(mtr):
-        inner_mtr = []
+    def matricify(matrix1):
+        inner_mtr = [[] for _ in range(n)]
+        builtins.print(inner_mtr)
         index = 0
+        #inner_mtr[row] = list(mtr[i] for row in range(n) if True for i in range(index, index + m))
         for row in range(n):
-            inner_mtr.append(list(mtr[i] for i in range(index, index + m))) #mtr[index, index + m]
+            #
+            inner_mtr[row] = [matrix1[i] for i in range(index, index + m)]
             index += m
+            #
+            #slicing is the cleanest solution to this operation...:
+            #inner_mtr[row] = matrix1[index:index + m]
+            #index += m
+            builtins.print(inner_mtr[row])
         return inner_mtr
 
-    def dematricify(matrix):
-        inner_list = []
-        for row in matrix: inner_list.append(list(row))
-        return inner_list
+    def dematricify(matrix2):
+        #for i, row in enumerate(matrix2):
+        #   builtins.print(i, type(row), row)
+        f=[elem for row in matrix2 for elem in row]
+        return f
 
     mtr_data = matricify(mtr)
 
@@ -351,6 +359,7 @@ def matrix(mtr,n,m):
         nonlocal n
         mtr_data.append(list(n_row)) #adding an entire tuple_to_list converted row.
         n = n + 1
+        #builtins.print(mtr_data)
         return dematricify(mtr_data)
 
     def add_column(r_col):
@@ -364,9 +373,9 @@ def matrix(mtr,n,m):
         nonlocal mtr_data
         for row in mtr_data:
             for elem in row:
-                builtins.print(elem, end= "")
+                builtins.print(elem, end= " ")
             builtins.print()
-        return matrix(dematricify(mtr_data), n, m)
+        return dematricify(mtr_data)
 
     def line():
         return n
@@ -376,33 +385,38 @@ def matrix(mtr,n,m):
 
     def shift_up():
         nonlocal mtr_data
-        new_mtr = [mtr[i + 1] if i > 0 else mtr[0] for i in
-                   range(len(mtr))]  # includes the first and last rows switching.
-        # mtr_data = mtr_data[1:] + [mtr_data[-1]] this is also possible.
-        mtr_data = new_mtr
+
+        #mtr_data = [mtr_data[i + 1] if i > 0 else mtr[0] for i in range(len(mtr_data))] -my code, doesnt work properly.
+
+        mtr_data = [mtr_data[(i + 1) % n] for i in range(n)] #includes the first and last rows switching. GPT helped -
+        #fixing the indexing issue in my code with the: [(i + 1) % n] solution. that's pretty clever...
+
+        # mtr_data = mtr_data[1:] + [mtr_data[0]] this is also possible and probably just superior in every way.
 
     def shift_down():
         nonlocal mtr_data
-        new_mtr = [mtr[i - 1] if i > 0 else mtr[0] for i in
-                   range(len(mtr))] #includes the first and last rows switching.
-        #new_mtr = [mtr_data[0]] + mtr_data[:-1] is also possible.
-        mtr_data = new_mtr
+        mtr_data = [mtr_data[-1]] + mtr_data[:-1]
 
+    #-------
     def shift_left():
         nonlocal mtr_data
-        for r in n:
-            mtr_data[r] = [r[1:]] + r[-1]
+        for r in range(n):
+            mtr_data[r] = mtr_data[r][1:] + [mtr_data[r][0]] #1
 
     def shift_right():
         nonlocal mtr_data
-        for r in n:
-            mtr_data[r] = [r[0]] + r[:-1]
+        for r in range(n):
+            mtr_data[r] = [mtr_data[r][-1]] + mtr_data[r][:-1] #2
+    #1,2: I put double square brackets to indicate where an element is being appended(requires a list wrapper) or a list slice as it is.
+    #-------
 
     def transpose():
         nonlocal mtr_data
-        for i in range(n):
-            for j in range(i, m): #runs from the diagonal to the last column of the mtr_data matrix.
-                mtr_data[i][j] = mtr_data[j][i]
+        temp_mtr = [[] for _ in range(m)]
+        for c in range(m):
+            for r in mtr_data:
+                temp_mtr[c].append(r[c])
+        mtr_data = temp_mtr
 
     dispatch = {'add_line' : add_line, 'add_column' : add_column, 'print' : print,
                 'line' : line, 'column' : column, 'shift_up' : shift_up,
@@ -518,26 +532,70 @@ def driver():
     #"""
     print('<<< Q6 >>>')
     m1 = matrix((1,2,3,4,5,6,7,8),2,4)
-    print(m1['add_line']((1,3,5,7))) # } makes no sense making this print like the same way as the - 'print' -
-    print(m1['add_column']((2,4,6))) # } method, since the matrix is an object and requires methods only...
+    print("added row: ", m1['add_line']((1,3,5,7)))        # } makes no sense making this print like the same way as the - 'print' -
+    print("added column: ", m1['add_column']((2,4,6)))     # } method, since the matrix is supposedly an object and operates on methods only.
+    #and also I have no idea how to use __str__ on this since its formally not an actual python object...
+
+    print("\nprint method: ")
+    m1['print']()
+
+    """
+    RANT INCOMING:
+    #I really don't get this part of the code:
+    #the 'print' method is suppose to print the entire matrix as it is so it makes -
+    #little to no sense using it to also print each line as it is, without additional -
+    #parameters, indicating wanting to print a single line.
+    
+    #still struggling to understand the logic here, is shouldn't work at all, first we -
+    #get the entire matrix referenced to "mat1", then for each row of the matrix we -
+    #reference the matrix again, this time calling it "line" for some reason and without -
+    #an actual etiquette slicing, are trying to print that same matrix again, thinking that -
+    "line" is for some reason suppose to just change by itself. and honestly, even with a very - 
+    #clever "print" method, the entire design seems extremely complicated compared to my simple,
+    #and logical "print" method which does exactly what a normal "print" method should do instead of this nonsense:
+    
     mat1 = m1['print']()
-    #print("stage1")
     for _ in range(m1['line']()):
-        line = mat1['print']()
-        #print("stage2")
+        line = mat1['print']() #is this suppose to enforce me to create another abstraction for "list" types and then overload another print method for lists just to return them as lists out of a metrix sequence for further element stripping? how is this a real thing? why am I not given instructions or clearer intuition, is this an assignment for the purpose of learning or am I just forced to use GPT to even understand this?
         for _ in range(m1['column']()):
             print(line['print'](), end=' ')
         print()
-    #print("stage3")
-    print(m1['shift_up']())
-    print(m1['shift_right']())
-    print(m1['transpose']())
+        
+    #I'm guessing this entire thing could have potentially be accomplished by getting some sort of an overload of print when given a -
+    #generator iterator, as indication of iteration over the mtr_data list itself in slices of size n, but not sure how or why...
+    #without any additional explanation or intuition given, this entire exercise seems completely pointless. 
+    """
+
+    #-------
+    print("\nshift_up:")
+    m1['shift_up']()
+    m1['print']()
+
+    print("\nshift_right:")
+    m1['shift_right']()
+    m1['print']()
+
+    print("\nshift_down:")
+    m1['shift_down']()
+    m1['print']()
+
+    print("\nshift_left:")
+    m1['shift_left']()
+    m1['print']()
+
+    print("\ntranspose:")
+    m1['transpose']()
+    m1['print']()
+    #-------
+
+    """still makes - 0 sense:
     mat1 = m1['print']()
     for _ in range(m1['line']()):
         line = mat1['print']()
         for _ in range(m1['column']()):
             print(line['print'](), end=' ')
         print()
+    """
     #"""
 
 # ------------------------------------------------
